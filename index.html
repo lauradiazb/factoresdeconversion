@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Laboratorio de conversiones</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f9f8;--card:#fff;--ink:#1d2b33;--mute:#5d6f78;--teal:#1f6f78;--teal-t:#e3f1f2;--or:#c8641e;--or-t:#fbeadc;--ok:#1d7a46;--ok-t:#dff3e6;--ko:#b3261e;--ko-t:#fbe3e1;--line:#cfdcde;--on:#fff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a1f;--card:#17262d;--ink:#e8f0f2;--mute:#9fb3ba;--teal:#5fc0cb;--teal-t:#173a40;--or:#f0985a;--or-t:#3a2616;--ok:#6fd39a;--ok-t:#153523;--ko:#ff8a80;--ko-t:#3d1b19;--line:#2c444d;--on:#0b1a1e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1a1f;--card:#17262d;--ink:#e8f0f2;--mute:#9fb3ba;--teal:#5fc0cb;--teal-t:#173a40;--or:#f0985a;--or-t:#3a2616;--ok:#6fd39a;--ok-t:#153523;--ko:#ff8a80;--ko-t:#3d1b19;--line:#2c444d;--on:#0b1a1e;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 "Segoe UI",system-ui,Roboto,sans-serif}
+main{max-width:640px;margin:0 auto;padding:18px 16px 40px}
+h1,h2,.pop{font-family:Poppins,"Segoe UI",system-ui,sans-serif}
+h1{font-size:26px;line-height:1.2;margin:6px 0 4px;color:var(--teal)}
+.sub{color:var(--or);font-weight:700;font-size:13px;letter-spacing:.08em;text-transform:uppercase;font-family:Poppins,system-ui,sans-serif}
+.lead{color:var(--mute);margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:12px;align-items:center;text-align:left;width:100%;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;cursor:pointer}
+.opt b{display:block}.opt span{color:var(--mute);font-size:14px}.opt .ic{font-size:26px}
+.opt[aria-pressed="true"]{border-color:var(--teal);background:var(--teal-t)}
+.lv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lv .opt{display:block;text-align:center;padding:10px 6px}
+.btn{background:var(--teal);color:var(--on);border:0;border-radius:14px;padding:14px 18px;font:700 17px Poppins,system-ui,sans-serif;cursor:pointer;width:100%}
+.btn.sec{background:var(--card);color:var(--teal);border:2px solid var(--teal)}
+.btn:disabled{opacity:.5}
+.row{display:flex;gap:10px}.row>*{flex:1}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700;font-size:15px}
+.bar{height:10px;background:var(--line);border-radius:9px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;background:var(--or);width:0;transition:width .3s}
+.q{font-size:19px}.big{font-size:23px;display:block;margin:8px 0;text-align:center;font-weight:600}
+.ans{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:14px 0 6px;font-size:20px}
+input{font:inherit;font-size:22px;width:130px;padding:10px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);text-align:center}
+input:focus{outline:3px solid var(--teal);border-color:var(--teal)}
+input.s{width:90px}
+.fb{border-radius:12px;padding:12px 14px;margin:10px 0;font-size:16px}
+.fb.ok{background:var(--ok-t);color:var(--ok)}.fb.ko{background:var(--ko-t);color:var(--ko)}
+.fb .sol{color:var(--ink);display:block;margin-top:6px}
+.hint{background:var(--or-t);border-radius:12px;padding:10px 14px;margin:10px 0;font-size:15px}
+.stars{font-size:42px;text-align:center;letter-spacing:6px}
+.note{color:var(--mute);font-size:13px;text-align:center;margin-top:16px}
+ul{padding-left:18px}li{margin:6px 0}
+[hidden]{display:none!important}
+</style></head><body><main>
+
+<section id="menu">
+  <div class="sub">2º ESO · Física y Química</div>
+  <h1>⚗️ Laboratorio de conversiones</h1>
+  <p class="lead">Practica notación científica y factores de conversión. Cada partida son 10 preguntas nuevas, generadas al azar.</p>
+  <h2 class="pop" style="font-size:16px;margin:14px 0 8px">1 · Elige qué practicar</h2>
+  <div class="opts" id="modes">
+    <button class="opt" data-m="nc" aria-pressed="true"><span class="ic">🔬</span><div><b>Notación científica</b><span>Pasar a a·10ⁿ, a decimal y operar</span></div></button>
+    <button class="opt" data-m="conv" aria-pressed="false"><span class="ic">📏</span><div><b>Factores de conversión</b><span>km, m, h, s, L, kg, km/h… con fútbol incluido</span></div></button>
+    <button class="opt" data-m="mix" aria-pressed="false"><span class="ic">🎲</span><div><b>Mixto</b><span>Un poco de todo</span></div></button>
+  </div>
+  <h2 class="pop" style="font-size:16px;margin:18px 0 8px">2 · Elige nivel</h2>
+  <div class="lv" id="levels">
+    <button class="opt" data-l="1" aria-pressed="true"><b>⚽ 1</b><span>Calentamiento</span></button>
+    <button class="opt" data-l="2" aria-pressed="false"><b>🥅 2</b><span>Titular</span></button>
+    <button class="opt" data-l="3" aria-pressed="false"><b>🏆 3</b><span>Champions</span></button>
+  </div>
+  <div style="margin-top:20px"><button class="btn" id="go">¡Jugar!</button></div>
+  <p class="note">Los datos de jugadores y jugadoras de los problemas son inventados para practicar.</p>
+</section>
+
+<section id="game" hidden>
+  <div class="hud"><span id="prog">1/10</span><span id="streak">🔥 0</span><span id="score">⭐ 0</span></div>
+  <div class="bar"><i id="barfill"></i></div>
+  <div class="card">
+    <div class="q" id="qtext"></div>
+    <div class="ans" id="ansbox"></div>
+    <div class="hint" id="hintbox" hidden></div>
+    <div class="fb" id="fb" hidden></div>
+    <div class="row" style="margin-top:12px"><button class="btn sec" id="hintbtn">💡 Pista (−5)</button><button class="btn" id="check">Comprobar</button></div>
+  </div>
+  <button class="btn sec" id="quit" style="border-color:var(--line);color:var(--mute)">Salir al menú</button>
+</section>
+
+<section id="end" hidden>
+  <div class="sub">Fin de la partida</div>
+  <h1 id="endtitle">¡Bien jugado!</h1>
+  <div class="card"><div class="stars" id="stars"></div>
+    <p style="text-align:center;margin:8px 0 0"><b id="endscore"></b><br><span id="endacc" style="color:var(--mute)"></span></p></div>
+  <div class="card" id="rev" hidden><b>Repasa lo que has fallado</b><ul id="revlist"></ul></div>
+  <div class="row"><button class="btn sec" id="menubtn">Menú</button><button class="btn" id="again">Jugar otra vez</button></div>
+</section>
+
+</main>
+<script>
+const $=s=>document.querySelector(s);
+const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a, pick=a=>a[rand(0,a.length-1)];
+const PL=["Lamine Yamal","Pedri","Gavi","Rodri","Dani Carvajal","Nico Williams","Dani Olmo","Unai Simón","Mikel Oyarzabal","Aitana Bonmatí","Alexia Putellas"];
+const sup=e=>"<sup>"+String(e).replace("-","−")+"</sup>";
+const fmtM=m=>String(m).replace(".",",");
+const ncH=(m,e)=>fmtM(m)+"·10"+sup(e);
+function fmt(n){let s=Number(n.toPrecision(12)).toLocaleString("en-US",{useGrouping:false,maximumFractionDigits:20});let [i,f]=s.split(".");if(i.length>4)i=i.replace(/\B(?=(\d{3})+(?!\d))/g,"\u00a0");return f?i+","+f:i}
+function parts(x){const [a,b]=x.toExponential(10).split("e");return{m:Number(Number(a).toFixed(8)),e:parseInt(b)}}
+function parse(s){s=String(s).trim().replace(/[\s\u00a0]/g,"").replace(",",".");return /^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(s)?Number(s):NaN}
+const clean=x=>Number(x.toPrecision(12));
+
+/* ---------- generadores ---------- */
+function qToNC(L){
+  const e=L===1?pick([2,3,4,5,6,-1,-2,-3,-4]):L===2?pick([-8,-7,-6,-5,-4,-3,-2,-1,2,3,4,5,6,7,8,9]):pick([-12,-11,-10,-9,-8,10,11,12,13,15]);
+  const m=L===1?rand(11,99)/10:rand(101,999)/100, x=clean(m*Math.pow(10,e));
+  const dir=e>0?"izquierda (el número es grande, exponente positivo)":"derecha (el número es pequeño, exponente negativo)";
+  return{kind:"nc",x,html:`Escribe en notación científica:<span class="big">${fmt(x)}</span>`,
+    sol:`La coma se mueve ${Math.abs(e)} lugares a la ${dir}: <b>${ncH(m,e)}</b>`,
+    hint:"Deja una sola cifra distinta de 0 delante de la coma. Cuenta cuántos lugares la mueves."};
+}
+function qToDec(L){
+  const e=L===1?pick([2,3,4,-1,-2,-3]):L===2?pick([-6,-5,-4,-3,2,3,4,5,6]):pick([-9,-8,-7,7,8,9]);
+  const m=L===1?rand(11,99)/10:rand(101,999)/100, x=clean(m*Math.pow(10,e));
+  return{kind:"num",ans:x,unit:"",html:`Escribe como número decimal:<span class="big">${ncH(m,e)}</span>`,
+    sol:`Exponente ${e>0?"positivo: coma "+e+" lugares a la derecha":"negativo: coma "+Math.abs(e)+" lugares a la izquierda"} → <b>${fmt(x)}</b>`,
+    hint:"Exponente positivo = número grande; negativo = número pequeño (0,000…)."};
+}
+function qOps(L){
+  const t=pick(["mul","div","sum"]);let m1,m2,e1,e2,x,txt,sol;
+  if(t==="mul"){m1=rand(2,9);m2=rand(2,9);e1=rand(-6,6);e2=rand(-6,6);x=clean(m1*m2*Math.pow(10,e1+e2));
+    txt=`(${ncH(m1,e1)}) · (${ncH(m2,e2)})`;sol=`Multiplica números y suma exponentes: ${m1*m2}·10${sup(e1+e2)} → <b>${(p=>ncH(p.m,p.e))(parts(x))}</b>`;}
+  else if(t==="div"){const pr=pick([[8,2],[9,3],[6,3],[6,2],[9,2],[5,2],[4,2],[7.5,2.5]]);m1=pr[0];m2=pr[1];e1=rand(-3,8);e2=rand(-8,3);x=clean((m1/m2)*Math.pow(10,e1-e2));
+    txt=`(${ncH(m1,e1)}) : (${ncH(m2,e2)})`;sol=`Divide números y resta exponentes: ${fmtM(m1/m2)}·10${sup(e1-e2)} → <b>${(p=>ncH(p.m,p.e))(parts(x))}</b>`;}
+  else{m1=rand(1,9);m2=rand(1,9);e1=rand(-5,7);x=clean((m1+m2)*Math.pow(10,e1));
+    txt=`${ncH(m1,e1)} + ${ncH(m2,e1)}`;sol=`Mismo exponente: suma los números, ${m1+m2}·10${sup(e1)} → <b>${(p=>ncH(p.m,p.e))(parts(x))}</b>`;}
+  return{kind:"nc",x,html:`Calcula y deja el resultado en notación científica:<span class="big">${txt}</span>`,sol,
+    hint:t==="sum"?"Si el exponente es el mismo, sumas los números y mantienes la potencia.":t==="mul"?"Multiplicas los números y SUMAS los exponentes.":"Divides los números y RESTAS los exponentes."};
+}
+const FAM=[{u:{km:1000,m:1,cm:.01,mm:.001},ctx:["km","m","cm"],t:p=>`Supón que ${p} recorre {v} {f} en un entrenamiento.`},
+ {u:{t:1000,kg:1,g:.001,mg:1e-6},ctx:["kg","g"],t:p=>`Supón que la bolsa de material de ${p} pesa {v} {f}.`},
+ {u:{d:86400,h:3600,min:60,s:1},ctx:["h","min"],t:p=>`Supón que ${p} entrena durante {v} {f}.`},
+ {u:{"m³":1000,"dm³":1,L:1,"cm³":.001,mL:.001},ctx:["L","mL"],t:p=>`Supón que ${p} bebe {v} {f} de agua en un partido.`}];
+const VALS=[2,3,4,5,6,8,12,25,2.5,3.5,.5,1.5,7,9,15,40];
+function qConv(L){
+  if(L>=2&&Math.random()<(L===3?.4:.25))return qSpeed();
+  for(let k=0;k<80;k++){
+    const fam=pick(FAM),ks=Object.keys(fam.u),f=pick(ks),t=pick(ks);if(f===t)continue;
+    const r=fam.u[f]/fam.u[t];if(r===1)continue;
+    const lim=L===1?1000:L===2?1e6:1e9;if(r>lim||r<1/lim)continue;
+    const v=pick(VALS),ans=clean(v*r);if(L<3&&(ans>1e8||ans<1e-5))continue;
+    const asNC=L===3&&(ans>=1e6||ans<1e-3);if(!asNC&&(ans>1e9||ans<1e-6))continue;
+    const fac=r>=1?`${fmt(r)} ${t} / 1 ${f}`:`1 ${t} / ${fmt(clean(1/r))} ${f}`;
+    let head=`Convierte <b>${fmt(v)} ${f}</b> a <b>${t}</b>${asNC?" y exprésalo en notación científica":""}.`;
+    if(fam.ctx.includes(f)&&Math.random()<.65)head=fam.t(pick(PL)).replace("{v}",fmt(v)).replace("{f}",f)+`<br>Exprésalo en <b>${t}</b>${asNC?" y en notación científica":""}.`;
+    const sol=`${fmt(v)} ${f} · (${fac}) = <b>${asNC?(p=>ncH(p.m,p.e))(parts(ans))+" "+t:fmt(ans)+" "+t}</b>`;
+    const hint=`La unidad que quieres quitar (${f}) va <b>abajo</b> de la fracción. Equivalencia: ${r>=1?`1 ${f} = ${fmt(r)} ${t}`:`1 ${t} = ${fmt(clean(1/r))} ${f}`}.`;
+    return asNC?{kind:"nc",x:ans,html:head,sol,hint}:{kind:"num",ans,unit:t,html:head,sol,hint};
+  }
+  return qConv(1);
+}
+function qSpeed(){
+  if(Math.random()<.5){const v=pick([18,36,54,72,90,108,126,144,180]),a=clean(v/3.6);
+    return{kind:"num",ans:a,unit:"m/s",html:`Supón que ${pick(PL)} corre a <b>${v} km/h</b>. Exprésalo en <b>m/s</b>.`,
+      sol:`${v} km/h · (1000 m / 1 km) · (1 h / 3600 s) = <b>${fmt(a)} m/s</b>`,hint:"1 km = 1000 m y 1 h = 3600 s. El km va abajo y la h va arriba."};}
+  const v=pick([5,7,10,12,15,20,25,30]),a=clean(v*3.6);
+  return{kind:"num",ans:a,unit:"km/h",html:`Supón que ${pick(PL)} va a <b>${v} m/s</b>. Exprésalo en <b>km/h</b>.`,
+    sol:`${v} m/s · (1 km / 1000 m) · (3600 s / 1 h) = <b>${fmt(a)} km/h</b>`,hint:"1 km = 1000 m y 1 h = 3600 s. Quita los m (van abajo) y quita los s (van abajo)."};
+}
+function build(mode,L){
+  const nc=()=>L===1?pick([qToNC,qToDec]):L===2?pick([qToNC,qToDec,qToNC,qOps]):pick([qToNC,qOps,qOps,qToDec]);
+  const out=[];for(let i=0;i<10;i++){const kind=mode==="nc"?"nc":mode==="conv"?"conv":(i%2?"conv":"nc");out.push((kind==="nc"?nc():qConv)(L))}
+  return out;
+}
+
+/* ---------- juego ---------- */
+let S={mode:"nc",level:1,qs:[],i:0,score:0,streak:0,hits:0,bad:[],hint:false,done:false};
+document.querySelectorAll("#modes .opt").forEach(b=>b.onclick=()=>{S.mode=b.dataset.m;document.querySelectorAll("#modes .opt").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+document.querySelectorAll("#levels .opt").forEach(b=>b.onclick=()=>{S.level=+b.dataset.l;document.querySelectorAll("#levels .opt").forEach(x=>x.setAttribute("aria-pressed",x===b))});
+const show=id=>["menu","game","end"].forEach(s=>$("#"+s).hidden=s!==id);
+function start(){S.qs=build(S.mode,S.level);S.i=0;S.score=0;S.streak=0;S.hits=0;S.bad=[];show("game");ask()}
+function ask(){
+  const q=S.qs[S.i];S.hint=false;S.done=false;
+  $("#prog").textContent=`${S.i+1}/10`;$("#streak").textContent=`🔥 ${S.streak}`;$("#score").textContent=`⭐ ${S.score}`;
+  $("#barfill").style.width=(S.i*10)+"%";
+  $("#qtext").innerHTML=q.html;
+  $("#ansbox").innerHTML=q.kind==="nc"?`<input id="m" class="s" inputmode="decimal" autocomplete="off" aria-label="a"> <span>·10</span><sup style="margin-top:-18px"><input id="e" class="s" style="width:70px;font-size:18px;padding:6px" inputmode="numeric" autocomplete="off" aria-label="exponente n"></sup>`
+    :`<input id="a" inputmode="decimal" autocomplete="off" aria-label="respuesta"> <span>${q.unit}</span>`;
+  ["fb","hintbox"].forEach(i=>$("#"+i).hidden=true);
+  $("#check").textContent="Comprobar";$("#hintbtn").disabled=false;
+  (document.querySelector("#a,#m")).focus();
+}
+function check(){
+  if(S.done){S.i++;return S.i>=10?finish():ask()}
+  const q=S.qs[S.i];let ok=false,note="";
+  if(q.kind==="num"){const v=parse($("#a").value);if(isNaN(v)){return flash("Escribe un número (puedes usar coma).")}ok=Math.abs(v-q.ans)<=Math.abs(q.ans)*1e-6+1e-12}
+  else{const m=parse($("#m").value),e=parse($("#e").value);if(isNaN(m)||isNaN(e))return flash("Rellena el número y el exponente.");
+    const val=m*Math.pow(10,e),eq=Math.abs(val-q.x)<=Math.abs(q.x)*1e-6,norm=Math.abs(m)>=1&&Math.abs(m)<10&&Number.isInteger(e);
+    ok=eq&&norm;if(eq&&!norm)note=" El valor es correcto, pero en notación científica el número debe cumplir 1 ≤ a &lt; 10."}
+  S.done=true;document.querySelectorAll("#ansbox input").forEach(i=>i.disabled=true);$("#hintbtn").disabled=true;
+  const fb=$("#fb");fb.hidden=false;
+  if(ok){S.streak++;S.hits++;const pts=Math.max(0,10+Math.min(S.streak,5)*2-(S.hint?5:0));S.score+=pts;
+    fb.className="fb ok";fb.innerHTML=`<b>¡Correcto! +${pts}</b>${S.streak>=3?" 🔥 Racha de "+S.streak:""}<span class="sol">${q.sol}</span>`}
+  else{S.streak=0;S.bad.push(q);fb.className="fb ko";fb.innerHTML=`<b>Casi.</b>${note}<span class="sol">${q.sol}</span>`}
+  $("#streak").textContent=`🔥 ${S.streak}`;$("#score").textContent=`⭐ ${S.score}`;
+  $("#check").textContent=S.i>=9?"Ver resultados":"Siguiente →";$("#check").focus();
+}
+function flash(t){const f=$("#fb");f.hidden=false;f.className="fb ko";f.textContent=t}
+function finish(){
+  show("end");const h=S.hits;
+  $("#stars").textContent=h>=9?"⭐⭐⭐":h>=7?"⭐⭐☆":h>=4?"⭐☆☆":"☆☆☆";
+  $("#endtitle").textContent=h>=9?"¡Golazo!":h>=7?"¡Muy bien!":h>=4?"¡Vas por buen camino!":"¡A seguir entrenando!";
+  $("#endscore").textContent=`${S.score} puntos`;$("#endacc").textContent=`${h} de 10 correctas`;
+  $("#rev").hidden=!S.bad.length;$("#revlist").innerHTML=S.bad.map(q=>`<li>${q.html.replace(/<br>/g," ")}<br><small>${q.sol}</small></li>`).join("");
+}
+$("#go").onclick=start;$("#again").onclick=start;$("#check").onclick=check;
+$("#menubtn").onclick=$("#quit").onclick=()=>show("menu");
+$("#hintbtn").onclick=()=>{if(S.done)return;S.hint=true;const b=$("#hintbox");b.hidden=false;b.innerHTML="💡 "+S.qs[S.i].hint};
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&!$("#game").hidden){e.preventDefault();check()}});
+</script></body></html>
